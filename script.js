@@ -42,45 +42,30 @@
       this.containerLeft = this.groupContainer.create(0, 89, 'containerLeft');
       this.containerRight = this.groupContainer.create(357, 89, 'containerRight');
 
+      this.bombs = this.add.group();
+      this.bombs.enableBody = true;
+      this.bombs.physicsBodyType = Phaser.Physics.ARCADE;
+
       this.timerEvents = [];
-      this.timerEvents[0] = this.time.events.loop(Phaser.Timer.SECOND * 2, this.generateBomb, this);
-
-      this.bomb = this.add.sprite(resolutionGame[0] / 2, -32, 'bomb', 1);
-      this.bomb.inputEnabled = true;
-      this.bomb.anchor.setTo(0.5,0.5);
-
-      this.bomb.color = 'black';
-      // this.bomb.frame = 1;
-      this.bomb.dragged = false;
-      this.bomb.posed = false;
-      this.bomb.collideAllowed = false;
-
-      this.physics.enable(this.bomb, Phaser.Physics.ARCADE);
-      this.bomb.enableBody = true;
-      this.bomb.physicsBodyType = Phaser.Physics.ARCADE;
-
-      //need to make this change in fonction of the different scale
-      this.physics.arcade.moveToXY(this.bomb, Math.floor(Math.random() * ( 360 - 130 ) + 130), Math.floor(Math.random() * ( resolutionGame[1] - 130 ) + 130 ));
-
-      this.bomb.events.onInputDown.add(this.dragBomb, this);
-      this.bomb.events.onInputUp.add(this.dropBomb, this);
+      this.timerEvents[0] = this.time.events.loop(Phaser.Timer.SECOND * 1, this.createBomb, this);
     },
 
     update: function(){
       // console.log(this.input.activePointer.x, this.input.activePointer.y);
+      game.physics.arcade.overlap(this.bombs, this.groupContainer, this.collideContainer, null, this);
 
-      game.physics.arcade.overlap(this.bomb, this.groupContainer, this.collideContainer, null, this);
+      for(var i in this.bombs.children){
+        if(this.bombs.children[i].dragged){
+          this.bombs.children[i].x = this.input.activePointer.x / scaleFactor[0];
+          this.bombs.children[i].y = this.input.activePointer.y / scaleFactor[1];
+        }
 
-      if(this.bomb.dragged){
-        this.bomb.x = this.input.activePointer.x / scaleFactor[0];
-        this.bomb.y = this.input.activePointer.y / scaleFactor[1];
-      }
-
-      if(this.bomb.y > resolutionGame[1] - 16){
-        this.physics.arcade.moveToXY(this.bomb, Math.floor(Math.random() * ( 360 - 130 ) + 130), Math.floor(Math.random() * ( resolutionGame[1] - 130 ) + 130 ));
-      }
-      if(this.bomb.y < 50 + 16){
-        this.physics.arcade.moveToXY(this.bomb, Math.floor(Math.random() * ( 360 - 130 ) + 130), Math.floor(Math.random() * ( resolutionGame[1] - 130 ) + 130 ));
+        if(this.bombs.children[i].y > resolutionGame[1] - 16){
+          this.physics.arcade.moveToXY(this.bombs.children[i], Math.floor(Math.random() * ( 360 - 130 ) + 130), Math.floor(Math.random() * ( resolutionGame[1] - 130 ) + 130 ));
+        }
+        if(this.bombs.children[i].y < 50 + 16){
+          this.physics.arcade.moveToXY(this.bombs.children[i], Math.floor(Math.random() * ( 360 - 130 ) + 130), Math.floor(Math.random() * ( resolutionGame[1] - 130 ) + 130 ));
+        }
       }
     },
 
@@ -90,8 +75,29 @@
       // game.debug.spriteBounds(this.containerRight);
     },
 
+    createBomb: function(){
+      var frame = Math.floor(Math.random() * 2),
+          bomb = this.bombs.create(resolutionGame[0] / 2, -32, 'bomb', frame);
+
+      bomb.inputEnabled = true;
+      bomb.anchor.setTo(0.5,0.5);
+
+      bomb.color = (frame) ? 'red' : 'black';
+      bomb.dragged = false;
+      bomb.posed = false;
+      bomb.collideAllowed = false;
+
+      this.physics.enable(bomb, Phaser.Physics.ARCADE);
+
+      //need to make this change in fonction of the different scale
+      this.physics.arcade.moveToXY(bomb, Math.floor(Math.random() * ( 360 - 130 ) + 130), Math.floor(Math.random() * ( resolutionGame[1] - 130 ) + 130 ));
+
+      bomb.events.onInputDown.add(this.dragBomb, this);
+      bomb.events.onInputUp.add(this.dropBomb, this);
+    },
+
     dragBomb: function(bomb, pointer){
-      this.bomb.dragged = true;
+      bomb.dragged = true;
     },
 
     dropBomb: function(bomb, pointer){
@@ -111,11 +117,7 @@
           this.gameOver(bomb);
         }
       }
-      this.bomb.dragged = false;
-    },
-
-    generateBomb: function(){
-      
+      bomb.dragged = false;
     },
 
     createTween: function(objectToTween){
@@ -135,7 +137,8 @@
     },
 
     gameOver: function(bomb){
-
+      this.game.paused = true;
+      console.log('died');
     }
   };
 
