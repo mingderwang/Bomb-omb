@@ -21,7 +21,7 @@
   var PreloadState = {
     preload: function(){
       this.load.image('background', 'assets/bg.png');
-      this.load.image('bomb', 'assets/bomb.png');
+      this.load.spritesheet('bomb', 'assets/bomb.png', 32, 32, 2);
       this.load.image('containerLeft', 'assets/containerLeft.jpg');
       this.load.image('containerRight', 'assets/containerRight.jpg');
     },
@@ -33,8 +33,6 @@
 
   var GameState = {
     create: function(){
-      // this.physics.startSystem();
-
       this.bg = this.add.image(0, 0, 'background');
 
       this.groupContainer = this.add.group();
@@ -44,9 +42,15 @@
       this.containerLeft = this.groupContainer.create(0, 89, 'containerLeft');
       this.containerRight = this.groupContainer.create(357, 89, 'containerRight');
 
-      this.bomb = this.add.sprite(resolutionGame[0] / 2, -32, 'bomb');
+      this.timerEvents = [];
+      this.timerEvents[0] = this.time.events.loop(Phaser.Timer.SECOND * 2, this.generateBomb, this);
+
+      this.bomb = this.add.sprite(resolutionGame[0] / 2, -32, 'bomb', 1);
       this.bomb.inputEnabled = true;
       this.bomb.anchor.setTo(0.5,0.5);
+
+      this.bomb.color = 'black';
+      // this.bomb.frame = 1;
       this.bomb.dragged = false;
       this.bomb.posed = false;
       this.bomb.collideAllowed = false;
@@ -91,11 +95,27 @@
     },
 
     dropBomb: function(bomb, pointer){
-      if(Phaser.Rectangle.contains(this.containerLeft.getBounds(), this.bomb.x + this.bomb.width / 2, this.bomb.y + this.bomb.height / 2) ||
-        Phaser.Rectangle.contains(this.containerRight.getBounds(), this.bomb.x + this.bomb.width / 2, this.bomb.y + this.bomb.height / 2)){
-        this.makeBombDumb(bomb);
+      if(Phaser.Rectangle.contains(this.containerLeft.getBounds(), bomb.x + bomb.width / 2, bomb.y + bomb.height / 2)){
+        // score ++
+        if(bomb.color == 'red'){
+          this.scored(bomb);
+        }else{
+          this.gameOver(bomb);
+        }
+      }
+      if(Phaser.Rectangle.contains(this.containerRight.getBounds(), bomb.x + bomb.width / 2, bomb.y + bomb.height / 2)){
+        // score ++
+        if(bomb.color == 'black'){
+          this.scored(bomb);
+        }else{
+          this.gameOver(bomb);
+        }
       }
       this.bomb.dragged = false;
+    },
+
+    generateBomb: function(){
+      
     },
 
     createTween: function(objectToTween){
@@ -108,10 +128,14 @@
       this.physics.arcade.moveToXY(bomb, Math.floor(Math.random() * ( 360 - 130 ) + 130), Math.floor(Math.random() * ( resolutionGame[1] - 130 ) + 130 ));
     },
 
-    makeBombDumb: function(bomb){
+    scored: function(bomb){
       bomb.posed = true;
       bomb.inputEnabled = false;
       bomb.body.velocity = 0;
+    },
+
+    gameOver: function(bomb){
+
     }
   };
 
