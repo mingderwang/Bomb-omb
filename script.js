@@ -22,18 +22,19 @@
   var GameState = {
     create: function(){
       this.bg = this.add.image(0, 0, 'background');
-      
+
       this.bomb = this.add.sprite(0, 0, 'bomb');
       this.bomb.inputEnabled = true;
       this.bomb.input.enableDrag(false, true);
+      this.bomb.events.onDragStop.add(this.dropBomb);
     },
 
     update: function(){
       
     },
 
-    clickBomb: function(){
-      console.log('test');
+    dropBomb: function(bomb, pointer){
+      console.log(bomb, pointer);
     }
   };
 
