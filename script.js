@@ -70,9 +70,7 @@
     },
 
     render: function(){
-      // game.debug.spriteBounds(this.bomb);
-      // game.debug.spriteBounds(this.containerLeft);
-      // game.debug.spriteBounds(this.containerRight);
+      
     },
 
     createBomb: function(){
