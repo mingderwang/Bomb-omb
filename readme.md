@@ -1,6 +1,6 @@
-- [x] <!-- add red / black bomb -->
-- [x] <!-- add red / black container -->
-- [x] <!-- add more bomb -->
+- [x] add red / black bomb
+- [x] add red / black container
+- [x] add more bomb
 - [ ] add explosion / timer for bomb
 - [ ] add more spritesheet's frames
 - [ ] add max to container capability
