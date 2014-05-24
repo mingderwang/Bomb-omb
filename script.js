@@ -79,7 +79,7 @@
 
     createBomb: function(){
       var frame = Math.floor(Math.random() * 2),
-          bomb = this.bombs.create(resolutionGame[0] / 2, -32, 'bomb' + frame, 0);
+          bomb = this.bombs.create(resolutionGame[0] / (2 * scaleFactor[0]), -32, 'bomb' + frame, 0);
 
       anim = bomb.animations.add('walk');
       anim.play(5, true);
@@ -149,19 +149,21 @@
       for(var i in this.bombs.children){
         this.bombs.children[i].body.velocity = 0;
         this.time.events.remove(this.bombs.children[i].timer);
-
       }
 
+      // wait a second before kiling the bombs
       this.time.events.add(Phaser.Timer.SECOND, function(){
         for(var j in this.bombs.children){
-          this.bombs.children[j].kill();
-          this.juicy.shake();
+          // only bombs outside of container
+          if(!this.bombs.children[j].posed){
+            this.bombs.children[j].kill();
+            this.juicy.shake();
+          }
         }
       }, this);
 
-      // this.game.paused = true;
+      // stop creating bombs
       this.time.events.remove(this.timerEvents[0]);
-      // console.log('died');
     },
 
     exploseBomb: function(bomb){
