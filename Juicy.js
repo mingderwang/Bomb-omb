@@ -309,7 +309,6 @@ Phaser.Plugin.Juicy.Trail.prototype.redrawSegments = function(offsetX, offsetY) 
 * @memberof Phaser.Plugin.Juicy
 */
 Phaser.Plugin.Juicy.prototype.shake = function (duration, strength) {
-  console.log('test from juicy');
   this._shakeWorldTime = duration || 20;
   this._shakeWorldMax = strength || 20;
   this.game.world.setBounds(this._boundsCache.x - this._shakeWorldMax, this._boundsCache.y - this._shakeWorldMax, this._boundsCache.width + this._shakeWorldMax, this._boundsCache.height + this._shakeWorldMax);

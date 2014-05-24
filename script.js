@@ -48,6 +48,7 @@
 
       this.timerEvents = [];
       this.timerEvents[0] = this.time.events.loop(Phaser.Timer.SECOND * 1, this.createBomb, this);
+
       // this.game.plugins.add('Juicy');
       this.juicy = this.game.plugins.add(new Phaser.Plugin.Juicy(this));
     },
@@ -86,6 +87,8 @@
       bomb.dragged = false;
       bomb.posed = false;
       bomb.collideAllowed = false;
+
+      bomb.timer = this.time.events.add(Phaser.Timer.SECOND * 5, this.explose, bomb);
 
       this.physics.enable(bomb, Phaser.Physics.ARCADE);
 
@@ -131,6 +134,7 @@
     },
 
     scored: function(bomb){
+      this.timerEvents[1].timer.nextTick -= 1000;
       bomb.posed = true;
       bomb.inputEnabled = false;
       bomb.body.velocity = 0;
@@ -138,9 +142,13 @@
 
     gameOver: function(bomb){
       this.juicy.shake();
-      this.time.events.remove(this.timerEvents[0]);
       // this.game.paused = true;
+      this.time.events.remove(this.timerEvents[0]);
       console.log('died');
+    },
+
+    explose: function(){
+      console.log(this.kill(), 'EXPLOSED BOMB');
     }
   };
 
