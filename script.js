@@ -48,9 +48,31 @@
 
       this.timerEvents = [];
       this.timerEvents[0] = this.time.events.loop(Phaser.Timer.SECOND * 1, this.createBomb, this);
+      // this.game.plugins.add('Juicy');
+      this.juicy = new Phaser.Plugin.Juicy(this);
+      // this.sf = this.juicy.createScreenFlash();
+      // console.log(this.juicy, this.sf);
+      // this.time.events.add(Phaser.Timer.SECOND, function(){
+        // console.log(this.juicy);
+        // this.sf.flash();
+        // this.juicy.shake();
+      // }, this);
+      // console.log(Phaser.Plugin.Juicy.ScreenFlash(this));
     },
 
     update: function(){
+      if(this.juicy._shakeWorldTime > 0) {
+        var magnitude = (this.juicy._shakeWorldTime / this.juicy._shakeWorldMax) * this.juicy._shakeWorldMax;
+        var x = this.game.rnd.integerInRange(-magnitude, magnitude);
+        var y = this.game.rnd.integerInRange(-magnitude, magnitude);
+
+        this.game.camera.x = x;
+        this.game.camera.y = y;
+        this.juicy._shakeWorldTime--;
+        if(this.juicy._shakeWorldTime <= 0) {
+          this.game.world.setBounds(this.juicy._boundsCache.x, this.juicy._boundsCache.x, this.juicy._boundsCache.width, this.juicy._boundsCache.height);
+        }
+      }
       // console.log(this.input.activePointer.x, this.input.activePointer.y);
       game.physics.arcade.overlap(this.bombs, this.groupContainer, this.collideContainer, null, this);
 
@@ -135,7 +157,9 @@
     },
 
     gameOver: function(bomb){
-      this.game.paused = true;
+      this.juicy.shake();
+      this.time.events.remove(this.timerEvents[0]);
+      // this.game.paused = true;
       console.log('died');
     }
   };
