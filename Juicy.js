@@ -409,7 +409,6 @@ Phaser.Plugin.Juicy.prototype.mouseStretch = function(object, strength, initialS
 * @memberof Phaser.Plugin.Juicy
 */
 Phaser.Plugin.Juicy.prototype.update = function () {
-  console.log('update');
   var scaleObj;
   // Screen Shake
   if(this._shakeWorldTime > 0) { 
