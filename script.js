@@ -21,7 +21,8 @@
   var PreloadState = {
     preload: function(){
       this.load.image('background', 'assets/bg.png');
-      this.load.spritesheet('bomb', 'assets/bomb.png', 32, 32, 2);
+      this.load.spritesheet('bomb0', 'assets/bomb0.png', 32, 32, 3);
+      this.load.spritesheet('bomb1', 'assets/bomb1.png', 32, 32, 3);
       this.load.image('containerLeft', 'assets/containerLeft.jpg');
       this.load.image('containerRight', 'assets/containerRight.jpg');
     },
@@ -78,7 +79,10 @@
 
     createBomb: function(){
       var frame = Math.floor(Math.random() * 2),
-          bomb = this.bombs.create(resolutionGame[0] / 2, -32, 'bomb', frame);
+          bomb = this.bombs.create(resolutionGame[0] / 2, -32, 'bomb' + frame, 0);
+
+      anim = bomb.animations.add('walk');
+      anim.play(5, true);
 
       bomb.inputEnabled = true;
       bomb.anchor.setTo(0.5,0.5);
@@ -88,7 +92,7 @@
       bomb.posed = false;
       bomb.collideAllowed = false;
 
-      bomb.timer = this.time.events.add(Phaser.Timer.SECOND * 5, this.explose, bomb);
+      bomb.timer = this.time.events.add(Phaser.Timer.SECOND * 5, this.exploseBomb, this, bomb);
 
       this.physics.enable(bomb, Phaser.Physics.ARCADE);
 
@@ -134,7 +138,7 @@
     },
 
     scored: function(bomb){
-      this.timerEvents[1].timer.nextTick -= 1000;
+      this.time.events.remove(bomb.timer);
       bomb.posed = true;
       bomb.inputEnabled = false;
       bomb.body.velocity = 0;
@@ -142,13 +146,27 @@
 
     gameOver: function(bomb){
       this.juicy.shake();
+      for(var i in this.bombs.children){
+        this.bombs.children[i].body.velocity = 0;
+        this.time.events.remove(this.bombs.children[i].timer);
+
+      }
+
+      this.time.events.add(Phaser.Timer.SECOND, function(){
+        for(var j in this.bombs.children){
+          this.bombs.children[j].kill();
+          this.juicy.shake();
+        }
+      }, this);
+
       // this.game.paused = true;
       this.time.events.remove(this.timerEvents[0]);
-      console.log('died');
+      // console.log('died');
     },
 
-    explose: function(){
-      console.log(this.kill(), 'EXPLOSED BOMB');
+    exploseBomb: function(bomb){
+      bomb.kill();
+      this.gameOver();
     }
   };
 
