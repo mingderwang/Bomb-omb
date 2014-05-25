@@ -6,10 +6,13 @@
   var BootState = {
    create: function(){
       if(!navigator.isCocoonJS){
-        // this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL; //resize your window to see the stage resize too
-        // this.game.scale.setShowAll();
-        // this.game.scale.refresh();
-        // this.game.scale.setScreenSize(true);
+        this.game.stage.smoothed = false;
+        this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL; //resize your window to see the stage resize too
+        this.game.scale.setShowAll();
+        this.game.scale.refresh();
+        this.game.scale.pageAlignHorizontally = true;
+        this.game.scale.pageAlignVertically = true;
+        this.game.scale.setScreenSize(true);
       }else{
         this.world.scale.setTo(scaleFactor[0], scaleFactor[1]);
       }
@@ -92,7 +95,7 @@
       bomb.posed = false;
       bomb.collideAllowed = false;
 
-      bomb.timer = this.time.events.add(Phaser.Timer.SECOND * 5, this.exploseBomb, this, bomb);
+      // bomb.timer = this.time.events.add(Phaser.Timer.SECOND * 5, this.exploseBomb, this, bomb);
 
       this.physics.enable(bomb, Phaser.Physics.ARCADE);
 
