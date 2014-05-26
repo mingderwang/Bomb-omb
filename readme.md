@@ -8,3 +8,4 @@
 - [x] kill only the ones who are not in container
 - [ ] OOP for bomb
 - [ ] menu
+- [ ] scale the calculation with scaleFactor

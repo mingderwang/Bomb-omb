@@ -59,7 +59,7 @@
 
     update: function(){
       // console.log(this.input.activePointer.x, this.input.activePointer.y);
-      game.physics.arcade.overlap(this.bombs, this.groupContainer, this.collideContainer, null, this);
+      // game.physics.arcade.overlap(this.bombs, this.groupContainer, this.collideContainer, null, this);
 
       for(var i in this.bombs.children){
         if(this.bombs.children[i].dragged){
@@ -67,6 +67,12 @@
           this.bombs.children[i].y = this.input.activePointer.y / scaleFactor[1];
         }
 
+        if(this.bombs.children[i].x < this.containerLeft.x + this.containerLeft.width + 16){
+          this.physics.arcade.moveToXY(this.bombs.children[i], Math.floor(Math.random() * ( 360 - 130 ) + 130), Math.floor(Math.random() * ( resolutionGame[1] - 130 ) + 130 ));
+        }
+        if(this.bombs.children[i].x > this.containerRight.x - 16){
+          this.physics.arcade.moveToXY(this.bombs.children[i], Math.floor(Math.random() * ( 360 - 130 ) + 130), Math.floor(Math.random() * ( resolutionGame[1] - 130 ) + 130 ));
+        }
         if(this.bombs.children[i].y > resolutionGame[1] - 16){
           this.physics.arcade.moveToXY(this.bombs.children[i], Math.floor(Math.random() * ( 360 - 130 ) + 130), Math.floor(Math.random() * ( resolutionGame[1] - 130 ) + 130 ));
         }
@@ -137,7 +143,7 @@
     },
 
     collideContainer: function(bomb, container){
-      this.physics.arcade.moveToXY(bomb, Math.floor(Math.random() * ( 360 - 130 ) + 130), Math.floor(Math.random() * ( resolutionGame[1] - 130 ) + 130 ));
+      // this.physics.arcade.moveToXY(bomb, Math.floor(Math.random() * ( 360 - 130 ) + 130), Math.floor(Math.random() * ( resolutionGame[1] - 130 ) + 130 ));
     },
 
     scored: function(bomb){
